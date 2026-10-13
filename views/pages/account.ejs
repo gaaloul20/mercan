@@ -1,0 +1,5 @@
+<%- include('../partials/head', { title, description }) %>
+<%- include('../partials/header') %>
+<section class="page-hero page-hero--travel"><div class="container"><p class="eyebrow eyebrow--light">Votre espace personnel</p><h1>Bonjour <%= user.name %></h1><p>Retrouvez ici l’historique de vos demandes à Mercan Voyages.</p></div></section>
+<section class="section container account-section"><div class="account-heading"><div><p class="eyebrow">Suivi de vos échanges</p><h2>Mes demandes</h2></div><a class="button button--outline" href="/hotels">Explorer les offres</a></div><div class="account-requests" data-account-requests><p class="loading-message">Chargement de vos demandes…</p></div><p class="form-feedback" data-account-feedback aria-live="polite"></p></section>
+<%- include('../partials/footer') %>

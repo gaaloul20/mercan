@@ -1,0 +1,114 @@
+CREATE DATABASE IF NOT EXISTS mercan_voyages
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE mercan_voyages;
+
+CREATE TABLE IF NOT EXISTS users (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  phone VARCHAR(30) NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role ENUM('client', 'admin') NOT NULL DEFAULT 'client',
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS sessions (
+  session_id VARCHAR(128) COLLATE utf8mb4_bin NOT NULL PRIMARY KEY,
+  expires INT UNSIGNED NOT NULL,
+  data MEDIUMTEXT COLLATE utf8mb4_bin,
+  INDEX sessions_expires_idx (expires)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS hotels (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(180) NOT NULL UNIQUE,
+  name VARCHAR(180) NOT NULL,
+  city ENUM('Hammamet', 'Sousse', 'Monastir', 'Mahdia', 'Djerba', 'Tabarka') NOT NULL,
+  stars TINYINT UNSIGNED NOT NULL,
+  summary VARCHAR(500) NOT NULL,
+  description TEXT NOT NULL,
+  board VARCHAR(100) NOT NULL,
+  services JSON NOT NULL,
+  images JSON NOT NULL,
+  price DECIMAL(10,2) NULL,
+  featured BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX hotels_city_stars_idx (city, stars),
+  INDEX hotels_featured_idx (featured)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS packages (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(180) NOT NULL UNIQUE,
+  type ENUM('voyage', 'tour', 'omra') NOT NULL,
+  title VARCHAR(180) NOT NULL,
+  destination VARCHAR(180) NOT NULL,
+  summary VARCHAR(500) NOT NULL,
+  description TEXT NOT NULL,
+  dates JSON NOT NULL,
+  duration VARCHAR(80) NOT NULL,
+  program JSON NOT NULL,
+  inclusions JSON NOT NULL,
+  exclusions JSON NOT NULL,
+  images JSON NOT NULL,
+  price DECIMAL(10,2) NULL,
+  featured BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX packages_type_featured_idx (type, featured)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS requests (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT UNSIGNED NULL,
+  request_type ENUM('hotel', 'voyage', 'tour', 'omra', 'flight') NOT NULL,
+  item_id BIGINT UNSIGNED NULL,
+  name VARCHAR(120) NOT NULL,
+  phone VARCHAR(30) NOT NULL,
+  email VARCHAR(190) NULL,
+  message TEXT NOT NULL,
+  flight_details JSON NULL,
+  status ENUM('nouvelle', 'en_cours', 'traitee') NOT NULL DEFAULT 'nouvelle',
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT requests_user_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+  INDEX requests_user_created_idx (user_id, created_at),
+  INDEX requests_status_created_idx (status, created_at)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  email VARCHAR(190) NOT NULL,
+  phone VARCHAR(30) NULL,
+  subject VARCHAR(180) NOT NULL,
+  message TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX contact_created_idx (created_at)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS slides (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(180) NOT NULL,
+  text VARCHAR(500) NOT NULL,
+  button_text VARCHAR(80) NOT NULL,
+  button_url VARCHAR(255) NOT NULL,
+  image VARCHAR(500) NOT NULL,
+  position SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+  active BOOLEAN NOT NULL DEFAULT TRUE
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS partners (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  logo VARCHAR(500) NOT NULL,
+  url VARCHAR(500) NULL,
+  position SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+  active BOOLEAN NOT NULL DEFAULT TRUE
+) ENGINE=InnoDB;

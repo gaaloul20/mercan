@@ -1,0 +1,12 @@
+<%- include('../partials/head', { title, description }) %>
+<%- include('../partials/header') %>
+<div class="container breadcrumbs"><a href="/">Accueil</a><span aria-hidden="true">/</span><a href="/hotels">Hôtels</a><span aria-hidden="true">/</span><span><%= hotel.name %></span></div>
+<section class="section container detail-layout">
+  <div class="detail-main">
+    <div class="gallery gallery--<%= asList(hotel.images)[0] || 'coast' %>"><div class="gallery__large scene scene--<%= asList(hotel.images)[0] || 'coast' %>" style="<%= sceneBackground(asList(hotel.images)[0]) %>"><span class="scene__label"><%= hotel.city %></span></div><div class="gallery__small scene scene--<%= asList(hotel.images)[0] || 'island' %>" style="<%= sceneBackground(asList(hotel.images)[0]) %>"></div><div class="gallery__small scene scene--<%= asList(hotel.images)[0] || 'city' %>" style="<%= sceneBackground(asList(hotel.images)[0]) %>"></div></div>
+    <p class="eyebrow"><%= hotel.city %> · <%= hotel.stars %> étoiles</p><h1 class="detail-title"><%= hotel.name %></h1><p class="detail-lead"><%= hotel.summary %></p>
+    <div class="detail-copy"><h2>À propos de l’hôtel</h2><p><%= hotel.description %></p><h2>Services</h2><ul class="check-list"><% asList(hotel.services).forEach((service) => { %><li><%= service %></li><% }) %></ul><h2>Formule de pension</h2><p><%= hotel.board %></p></div>
+  </div>
+  <aside class="booking-card"><p class="eyebrow">Une envie de séjour ?</p><h2><%= hotel.price ? `À partir de ${Number(hotel.price).toFixed(0)} TND` : 'Tarif sur demande' %></h2><p>Les disponibilités et tarifs varient selon vos dates. Demandez une proposition personnalisée à nos conseillers.</p><button class="button button--orange button--wide" type="button" data-request data-request-type="hotel" data-item-id="<%= hotel.id %>" data-item-title="<%= hotel.name %>">Demander une offre</button><a class="booking-card__phone" href="tel:+21655333100">☎ +216 55 333 100</a></aside>
+</section>
+<%- include('../partials/footer') %>

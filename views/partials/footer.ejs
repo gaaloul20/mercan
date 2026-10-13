@@ -1,0 +1,68 @@
+</main>
+<section class="newsletter-band" aria-labelledby="newsletter-title">
+  <div class="container newsletter-band__inner">
+    <div>
+      <p class="eyebrow eyebrow--light">Un peu d’évasion dans votre boîte mail</p>
+      <h2 id="newsletter-title">Les prochaines belles offres ?</h2>
+      <p>Recevez nos actualités et idées de voyage.</p>
+    </div>
+    <form class="newsletter-form js-form" action="/api/newsletter" method="post">
+      <label class="sr-only" for="newsletter-email">Votre adresse e-mail</label>
+      <input id="newsletter-email" name="email" type="email" autocomplete="email" placeholder="Votre adresse e-mail" required>
+      <button class="button button--orange" type="submit">Je m’inscris <span aria-hidden="true">→</span></button>
+      <p class="form-feedback" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-about">
+      <a class="brand brand--footer" href="/"><img src="/images/mercan.jpg" width="64" height="64" alt="Mercan Voyages"></a>
+      <p>Des voyages choisis avec soin et un accompagnement attentif depuis Tunis.</p>
+      <p class="footer-category">Agence de voyage catégorie A · Tunis</p>
+    </div>
+    <div>
+      <h2>Nous contacter</h2>
+      <ul class="footer-list">
+        <li><a href="tel:+21655333100">+216 55 333 100</a></li>
+        <li><a href="https://www.google.com/maps/search/?api=1&query=Avenue%20de%20Madrid%2C%20Le%20Passage%2C%20Tunis%201001" target="_blank" rel="noopener noreferrer">Avenue de Madrid, Le Passage<br>Tunis 1001</a></li>
+        <li>Ouvert tous les jours</li>
+        <li><a href="https://www.facebook.com/mercan.voyage" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+      </ul>
+      <div class="footer-map" aria-label="Carte de localisation de l’agence">
+        <iframe
+          src="https://www.google.com/maps?q=Avenue%20de%20Madrid%2C%20Le%20Passage%2C%20Tunis%201001&output=embed"
+          title="Localisation de Mercan Voyages, avenue de Madrid, Le Passage, Tunis"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+    <div>
+      <h2>À découvrir</h2>
+      <ul class="footer-list">
+        <li><a href="/qui-sommes-nous">Qui sommes-nous ?</a></li>
+        <li><a href="/conditions-de-vente">Conditions de vente</a></li>
+        <li><a href="/voyages">Voyages organisés</a></li>
+        <li><a href="/tours">Circuits & tours</a></li>
+        <li><a href="/omra">Omra 2026</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Hôtels en Tunisie</h2>
+      <ul class="footer-list footer-list--cities">
+        <% cities.forEach((city) => { %><li><a href="/hotels?ville=<%= encodeURIComponent(city) %>"><%= city %></a></li><% }) %>
+      </ul>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>© <%= new Date().getFullYear() %> Mercan Voyages. Tous droits réservés.</p>
+    <p>Fait pour vous emmener plus loin.</p>
+  </div>
+</footer>
+<a class="whatsapp-float" href="https://wa.me/21655333100" target="_blank" rel="noopener noreferrer" aria-label="Contacter Mercan Voyages sur WhatsApp">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.6 4.2 1.6 6L0 24l6.4-1.7a11.8 11.8 0 0 0 5.7 1.5h.1c6.5 0 11.8-5.3 11.8-11.8a11.8 11.8 0 0 0-3.5-8.5ZM12.1 21.8a9.9 9.9 0 0 1-5.1-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.8 9.8 0 1 1 8.5 4.7Zm5.4-7.4c-.3-.2-1.8-.9-2.1-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.1 8.1 0 0 1-2.4-1.5 9 9 0 0 1-1.7-2.1c-.2-.3 0-.5.1-.6l.5-.6c.2-.2.2-.4.3-.6s0-.4 0-.6c-.1-.2-.7-1.7-.9-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.6 0 1.5 1.1 2.9 1.3 3.1.1.2 2.2 3.4 5.3 4.7.7.3 1.2.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2.1-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.3-.6-.4Z"/></svg>
+</a>
+</body>
+</html>

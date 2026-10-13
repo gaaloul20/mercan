@@ -1,0 +1,25 @@
+<div class="voyage-carousel" data-carousel aria-label="Offres de voyages organisés">
+  <button class="carousel-arrow carousel-arrow--previous" type="button" data-carousel-prev aria-label="Afficher les voyages précédents">
+    <span aria-hidden="true">‹</span>
+  </button>
+  <div class="voyage-carousel__viewport" data-carousel-viewport>
+    <div class="voyage-carousel__track" data-carousel-track>
+      <% items.forEach((item) => { const image = asList(item.images)[0] || 'istanbul'; %>
+        <article class="voyage-poster">
+          <a class="voyage-poster__link scene--<%= isPhoto(image) ? 'photo' : image %>" href="/offres/<%= item.slug %>" aria-label="Découvrir <%= item.title %>">
+            <% if (isPhoto(image)) { %>
+              <img class="voyage-poster__image" src="<%= image %>" alt="Affiche : <%= item.title %>" loading="lazy">
+            <% } else { %>
+              <span class="voyage-poster__fallback" aria-hidden="true"></span>
+            <% } %>
+            <% if (!isPhoto(image) && item.price) { %><span class="voyage-poster__price">À partir de<br><strong><%= Number(item.price).toLocaleString('fr-FR') %> TND</strong></span><% } %>
+            <span class="voyage-poster__title"><%= item.title %></span>
+          </a>
+        </article>
+      <% }) %>
+    </div>
+  </div>
+  <button class="carousel-arrow carousel-arrow--next" type="button" data-carousel-next aria-label="Afficher les voyages suivants">
+    <span aria-hidden="true">›</span>
+  </button>
+</div>

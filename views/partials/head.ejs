@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %></title>
+  <meta name="description" content="<%= description %>">
+  <meta name="theme-color" content="#0B4F9E">
+  <meta property="og:title" content="<%= title %>">
+  <meta property="og:description" content="<%= description %>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="/js/app.js" defer></script>
+</head>
+<body data-user-name="<%= user ? user.name : '' %>" data-user-phone="<%= user ? user.phone : '' %>">
+<div class="page-loader" id="page-loader" hidden aria-hidden="true">
+  <div class="page-loader__content" role="status" aria-label="Chargement de Mercan Voyages">
+    <div class="page-loader__brand">
+      <span class="page-loader__orbit" aria-hidden="true"></span>
+      <span class="page-loader__plane" aria-hidden="true">✈</span>
+      <img src="/images/mercan.jpg" width="180" height="180" alt="">
+    </div>
+    <p>Préparation de votre voyage</p>
+    <span class="page-loader__progress" aria-hidden="true"><span></span></span>
+  </div>
+</div>

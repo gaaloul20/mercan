@@ -1,0 +1,11 @@
+<%- include('../partials/head', { title, description }) %>
+<%- include('../partials/header') %>
+<% if (type === 'voyage') { %>
+<section class="page-hero page-hero--travel"><div class="container"><p class="eyebrow eyebrow--light">Mercan Voyages · Tunis</p><h1>Voyages organisés</h1><p>Envie d’évasion sans stress ? Découvrez nos voyages organisés au départ de Tunis et préparez votre prochaine escapade avec nos conseillers.</p></div></section>
+<% } else { %>
+<section class="page-hero <%= type === 'omra' ? 'page-hero--omra' : type === 'tour' ? 'page-hero--tour' : 'page-hero--travel' %>"><div class="container"><p class="eyebrow eyebrow--light">Mercan Voyages · Tunis</p><h1><%= pageTitle %></h1><p><%= description %></p></div></section>
+<% } %>
+<section class="section container"><div class="results-heading"><h2><%= items.length %> <%= items.length === 1 ? 'proposition' : 'propositions' %></h2><p>Contactez-nous pour connaître les disponibilités et conditions.</p></div>
+<% if (items.length) { %><div class="card-grid card-grid--packages"><% items.forEach((item) => { %><%- include('../partials/package-card', { item }) %><% }) %></div><% } else { %><div class="empty-state"><h2>De nouvelles propositions arrivent bientôt</h2><p>Notre équipe peut aussi préparer un séjour selon vos envies.</p><a class="button button--blue" href="/contact">Parler à un conseiller</a></div><% } %>
+</section>
+<%- include('../partials/footer') %>

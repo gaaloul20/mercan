@@ -1,0 +1,68 @@
+<%- include('../partials/head', { title, description }) %>
+<%- include('../partials/header') %>
+<section class="hero" role="region" aria-roledescription="carrousel" aria-label="À la une">
+  <div class="hero__slides">
+    <% slides.forEach((slide, index) => { %>
+      <article class="hero-slide <%= isPhoto(slide.image) ? 'hero-slide--photo' : `scene--${slide.image}` %> <%= index === 0 ? 'is-active' : '' %>" style="<%= sceneBackground(slide.image) %>" data-slide="<%= index %>" role="group" aria-roledescription="diapositive" aria-label="<%= index + 1 %> sur <%= slides.length %>" aria-hidden="<%= index !== 0 %>">
+        <div class="container hero-slide__content">
+          <p class="eyebrow eyebrow--light">Mercan Voyages · Tunis</p>
+          <h1><%= slide.title %></h1>
+          <p><%= slide.text %></p>
+          <a class="button button--orange" href="<%= slide.button_url %>"><%= slide.button_text %><span aria-hidden="true"> →</span></a>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+  <% if (slides.length > 1) { %>
+  <button class="hero-arrow hero-arrow--previous" type="button" data-hero-previous aria-label="Diapositive précédente"><span aria-hidden="true">‹</span></button>
+  <button class="hero-arrow hero-arrow--next" type="button" data-hero-next aria-label="Diapositive suivante"><span aria-hidden="true">›</span></button>
+  <div class="hero-controls" role="group" aria-label="Choisir une diapositive">
+    <% slides.forEach((slide, index) => { %><button type="button" class="hero-dot <%= index === 0 ? 'is-active' : '' %>" aria-label="Afficher la diapositive <%= index + 1 %>" aria-pressed="<%= index === 0 %>" data-slide-to="<%= index %>"></button><% }) %>
+  </div>
+  <% } %>
+</section>
+<section class="search-panel container" aria-labelledby="hotel-search-title">
+  <div class="search-panel__heading"><div><p class="eyebrow">Votre prochain séjour</p><h2 id="hotel-search-title">Trouvez votre hôtel</h2></div><span class="search-panel__icon" aria-hidden="true">⌕</span></div>
+  <form class="hotel-search" action="/hotels" method="get">
+    <label class="field field--destination"><span>Destination</span><select name="ville"><option value="">Toutes les destinations</option><% cities.forEach((city) => { %><option value="<%= city %>"><%= city %></option><% }) %></select></label>
+    <label class="field"><span>Arrivée</span><input type="date" name="arrivee" data-date-min required></label>
+    <label class="field"><span>Départ</span><input type="date" name="depart" data-date-min required></label>
+    <div class="occupancy-wrap">
+      <button class="field occupancy-trigger" type="button" aria-expanded="false" aria-controls="occupancy-panel"><span>Voyageurs</span><span data-occupancy-summary>1 chambre · 2 adultes</span></button>
+      <div class="occupancy-panel" id="occupancy-panel" hidden>
+        <div class="occupancy-panel__head"><strong>Chambres et occupations</strong><button type="button" class="icon-button" data-close-occupancy aria-label="Fermer">×</button></div>
+        <div class="room-list" data-room-list></div>
+        <button class="text-link add-room" type="button" data-add-room>＋ Ajouter une chambre</button>
+        <button class="button button--blue occupancy-done" type="button" data-close-occupancy>Terminé</button>
+      </div>
+      <input type="hidden" name="chambres" value="1">
+    </div>
+    <button class="button button--blue search-submit" type="submit">Voir les tarifs <span aria-hidden="true">→</span></button>
+  </form>
+</section>
+<section class="section container">
+  <div class="section-heading"><div><p class="eyebrow">Nos adresses</p><h2>Hôtels en Tunisie</h2><p>Des idées de séjour sur les plus belles côtes tunisiennes.</p></div><a class="button button--outline" href="/hotels">Voir la liste <span aria-hidden="true">→</span></a></div>
+  <% if (hotels.length) { %><div class="card-grid card-grid--hotels"><% hotels.forEach((hotel) => { %><%- include('../partials/hotel-card', { hotel }) %><% }) %></div><% } else { %><p class="empty-state">Nos séjours hôteliers seront bientôt disponibles. Contactez-nous pour préparer votre escapade.</p><% } %>
+</section>
+<section class="section section--tint">
+  <div class="container voyage-showcase">
+    <div class="voyage-showcase__heading"><p class="eyebrow">À l’horizon</p><h2>Voyages organisés</h2><p>Envie d’évasion sans stress ? Découvrez nos prochains départs au départ de Tunis.</p></div>
+    <% if (voyages.length) { %><%- include('../partials/voyage-carousel', { items: voyages }) %><div class="voyage-showcase__action"><a class="button button--blue" href="/voyages">Voir la liste <span aria-hidden="true">→</span></a></div><% } else { %><p class="empty-state">De nouvelles escapades seront annoncées bientôt.</p><% } %>
+  </div>
+</section>
+<% if (omra.length) { %><section class="omra-banner container">
+  <% const omraOffer = omra[0]; const omraImage = asList(omraOffer.images)[0]; %>
+  <a class="omra-banner__visual" href="/offres/<%= omraOffer.slug %>" aria-label="Découvrir <%= omraOffer.title %>"><img class="omra-banner__image" src="<%= omraImage %>" alt="Affiche de l’offre Omra La Mecque et Médine" loading="lazy"></a>
+  <div class="omra-banner__content"><p class="eyebrow">Une parenthèse spirituelle</p><h2><%= omraOffer.title %></h2><p><%= omraOffer.summary %></p><p class="omra-banner__price"><%= omraOffer.price ? `${Number(omraOffer.price).toFixed(0)} TND / personne` : 'Sur demande' %></p><a class="button button--blue" href="/offres/<%= omraOffer.slug %>">Découvrir l’offre <span aria-hidden="true">→</span></a><a class="text-link omra-banner__all" href="/omra">Voir toutes nos offres Omra <span aria-hidden="true">→</span></a></div>
+</section><% } %>
+<% if (partners.length) { %><section class="section container partners-section"><div class="section-heading"><div><p class="eyebrow">Ils voyagent avec nous</p><h2>Nos partenaires</h2></div></div><div class="partner-grid"><% partners.forEach((partner) => { %><a class="partner-card" href="<%= partner.url || '#' %>" <%= partner.url ? 'target="_blank" rel="noopener noreferrer"' : '' %>><img src="<%= partner.logo %>" alt="<%= partner.name %>" loading="lazy"></a><% }) %></div></section><% } %>
+<section class="section section--tint why-section">
+  <div class="container"><div class="section-heading section-heading--center"><div><p class="eyebrow">Le voyage en confiance</p><h2>Pourquoi choisir Mercan Voyages ?</h2><p>Une équipe à vos côtés, de la première idée au retour.</p></div></div>
+    <div class="benefit-grid">
+      <article class="benefit-card"><span class="benefit-icon" aria-hidden="true">✓</span><h3>Paiement en confiance</h3><p>Vos demandes sont traitées avec sérieux et nos conseillers vous expliquent clairement les modalités avant toute réservation.</p></article>
+      <article class="benefit-card"><span class="benefit-icon" aria-hidden="true">♡</span><h3>Des conseillers à l’écoute</h3><p>Un échange humain pour comprendre vos envies et vous guider vers un séjour qui vous ressemble.</p></article>
+      <article class="benefit-card"><span class="benefit-icon" aria-hidden="true">✦</span><h3>Un large choix de destinations</h3><p>Séjours en Tunisie, voyages organisés, circuits et Omra : explorons ensemble vos prochaines envies.</p></article>
+    </div>
+  </div>
+</section>
+<%- include('../partials/footer') %>

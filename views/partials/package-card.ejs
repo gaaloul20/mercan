@@ -1,0 +1,14 @@
+<article class="package-card">
+  <% const image = asList(item.images)[0] || (item.type === 'omra' ? 'omra' : 'istanbul'); %>
+  <a class="scene scene--<%= isPhoto(image) ? 'photo' : image %>" style="<%= sceneBackground(image) %>" href="/offres/<%= item.slug %>" aria-label="Découvrir <%= item.title %>">
+    <% if (isPhoto(image)) { %><img class="scene__image" src="<%= image %>" alt="Offre de voyage : <%= item.title %>" loading="lazy"><% } %>
+    <% if (!isPhoto(image)) { %><span class="scene__label"><%= item.destination %></span><% } %>
+    <% if (item.featured) { %><span class="scene__badge">À découvrir</span><% } %>
+  </a>
+  <div class="package-card__body">
+    <p class="card-kicker"><%= item.duration %></p>
+    <h3><a href="/offres/<%= item.slug %>"><%= item.title %></a></h3>
+    <p class="card-summary"><%= item.summary %></p>
+    <div class="card-bottom"><span><%= item.price ? `${Number(item.price).toFixed(0)} TND${item.type === 'omra' ? ' / personne' : ''}` : 'Sur demande' %></span><a class="text-link" href="/offres/<%= item.slug %>">En savoir plus <span aria-hidden="true">→</span></a></div>
+  </div>
+</article>

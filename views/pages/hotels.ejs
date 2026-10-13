@@ -1,0 +1,13 @@
+<%- include('../partials/head', { title, description }) %>
+<%- include('../partials/header') %>
+<section class="page-hero page-hero--hotels"><div class="container"><p class="eyebrow eyebrow--light">Séjours en Tunisie</p><h1>Nos hôtels</h1><p>Choisissez votre escale parmi les plus belles côtes tunisiennes.</p></div></section>
+<section class="section container">
+  <form class="filter-bar" action="/hotels" method="get">
+    <label class="field"><span>Ville</span><select name="ville"><option value="">Toutes les villes</option><% cities.forEach((city) => { %><option value="<%= city %>" <%= selectedCity === city ? 'selected' : '' %>><%= city %></option><% }) %></select></label>
+    <label class="field"><span>Catégorie</span><select name="etoiles"><option value="">Toutes les catégories</option><% [5,4,3,2,1].forEach((stars) => { %><option value="<%= stars %>" <%= selectedStars === stars ? 'selected' : '' %>><%= stars %> étoiles</option><% }) %></select></label>
+    <button class="button button--blue" type="submit">Filtrer les hôtels</button>
+  </form>
+  <div class="results-heading"><h2><%= hotels.length %> <%= hotels.length === 1 ? 'hôtel trouvé' : 'hôtels trouvés' %></h2><p>Prix affichés à titre indicatif lorsqu’ils sont disponibles.</p></div>
+  <% if (hotels.length) { %><div class="card-grid card-grid--hotels"><% hotels.forEach((hotel) => { %><%- include('../partials/hotel-card', { hotel }) %><% }) %></div><% } else { %><div class="empty-state"><h2>Aucun hôtel ne correspond à vos filtres</h2><p>Modifiez vos critères ou demandez conseil à notre équipe.</p><a class="button button--outline" href="/hotels">Effacer les filtres</a></div><% } %>
+</section>
+<%- include('../partials/footer') %>

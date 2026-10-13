@@ -1,0 +1,24 @@
+<%- include('../partials/head', { title, description }) %>
+<%- include('../partials/header') %>
+<section class="page-hero page-hero--travel"><div class="container"><p class="eyebrow eyebrow--light">À vous de choisir la destination</p><h1>Votre demande de vol</h1><p>Partagez vos dates et préférences : notre équipe vous répond avec une proposition personnalisée.</p></div></section>
+<section class="section container form-page-layout">
+  <div class="form-card"><p class="eyebrow">Vol au départ de Tunis ou d’ailleurs</p><h2>Préparons votre trajet</h2>
+    <form class="js-form" action="/api/flights" method="post" data-flight-form>
+      <fieldset class="trip-choice"><legend>Type de trajet</legend><label><input type="radio" name="tripType" value="aller-retour" checked> Aller-retour</label><label><input type="radio" name="tripType" value="aller-simple"> Aller simple</label></fieldset>
+      <div class="form-grid">
+        <label class="field"><span>Ville de départ</span><input name="departure" value="Tunis" required maxlength="120" autocomplete="address-level2"></label>
+        <label class="field"><span>Destination</span><input name="destination" required maxlength="120" placeholder="Ex. Istanbul"></label>
+        <label class="field"><span>Date de départ</span><input type="date" name="departDate" data-date-min required></label>
+        <label class="field" data-return-field><span>Date de retour</span><input type="date" name="returnDate" data-date-min required></label>
+        <label class="field"><span>Adultes</span><select name="adults"><% for (let n = 1; n <= 9; n++) { %><option value="<%= n %>" <%= n === 1 ? 'selected' : '' %>><%= n %></option><% } %></select></label>
+        <label class="field"><span>Enfants</span><select name="children"><% for (let n = 0; n <= 9; n++) { %><option value="<%= n %>"><%= n %></option><% } %></select></label>
+        <label class="field"><span>Compagnie souhaitée (facultatif)</span><input name="airline" maxlength="120" value="<%= selectedAirline %>" placeholder="Ex. Nouvelair"></label>
+        <label class="field"><span>Votre téléphone</span><input name="phone" type="tel" autocomplete="tel" required pattern="[+()0-9 .-]{7,30}" placeholder="+216"></label>
+      </div>
+      <p class="form-note">Votre demande est enregistrée et nous ouvrons ensuite WhatsApp pour vous laisser l’envoyer à notre équipe.</p>
+      <button class="button button--blue" type="submit">Envoyer ma demande <span aria-hidden="true">→</span></button><p class="form-feedback" aria-live="polite"></p>
+    </form>
+  </div>
+  <aside class="contact-aside"><span class="contact-aside__icon" aria-hidden="true">✈</span><h2>Besoin d’un conseil ?</h2><p>Nous pouvons vous aider à comparer les horaires, les compagnies et les options de voyage.</p><a class="button button--outline button--wide" href="https://wa.me/21655333100" target="_blank" rel="noopener noreferrer">Écrire sur WhatsApp</a><a class="contact-aside__phone" href="tel:+21655333100">+216 55 333 100</a></aside>
+</section>
+<%- include('../partials/footer') %>

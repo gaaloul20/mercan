@@ -1,0 +1,8 @@
+<%- include('../partials/head', { title, description: 'Connexion sécurisée au panneau d’administration Mercan Voyages.' }) %>
+<%- include('../partials/header') %>
+<section class="auth-section section">
+  <div class="auth-card"><a class="auth-mark" href="/"><img src="/images/mercan.jpg" alt="Mercan Voyages" width="96" height="96"></a><p class="eyebrow">Espace réservé</p><h1>Administration</h1><p>Connectez-vous avec le compte administrateur de l’agence.</p>
+    <form class="js-form" action="/api/auth/login" method="post"><label class="field"><span>Adresse e-mail</span><input name="email" type="email" required autocomplete="username"></label><label class="field"><span>Mot de passe</span><input name="password" type="password" required autocomplete="current-password"></label><button class="button button--blue button--wide" type="submit">Accéder au panneau</button><p class="form-feedback" aria-live="polite"></p></form>
+  </div>
+</section>
+<%- include('../partials/footer') %>

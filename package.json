@@ -1,0 +1,31 @@
+{
+  "name": "mercan-voyages",
+  "version": "1.0.0",
+  "description": "Site de l'agence de voyage tunisienne Mercan Voyages",
+  "private": true,
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node db/seed.js",
+    "migrate:mysql-to-mongo": "node db/migrate-mysql-to-mongo.js",
+    "check": "node --check server.js && node --check db/mongo.js && node --check db/session-store.js && node --check db/seed.js && node --check db/migrate-mysql-to-mongo.js && node --check admin/resources.js && node --check routes/api.js && node --check routes/pages.js && node --check routes/admin.js && node --check public/js/app.js && node --check public/js/admin.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.8.1",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.0.0",
+    "mongodb": "^6.21.0",
+    "multer": "^2.0.2",
+    "mysql2": "^3.12.0"
+  }
+}

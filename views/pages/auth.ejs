@@ -1,0 +1,18 @@
+<%- include('../partials/head', { title, description }) %>
+<%- include('../partials/header') %>
+<section class="auth-section section">
+  <div class="auth-card">
+    <a class="auth-mark" href="/" aria-label="Mercan Voyages"><img src="/images/mercan.jpg" alt="Mercan Voyages" width="96" height="96"></a>
+    <p class="eyebrow"><%= mode === 'login' ? 'Ravi de vous revoir' : 'Votre espace voyageur' %></p>
+    <h1><%= mode === 'login' ? 'Se connecter' : 'Créer mon compte' %></h1>
+    <p><%= mode === 'login' ? 'Retrouvez vos demandes et leur suivi.' : 'Suivez vos demandes et échangez plus facilement avec nos conseillers.' %></p>
+    <form class="js-form" action="/api/auth/<%= mode %>" method="post">
+      <% if (mode === 'register') { %><label class="field"><span>Nom complet</span><input name="name" required minlength="2" maxlength="120" autocomplete="name"></label><label class="field"><span>Téléphone</span><input name="phone" type="tel" required pattern="[+()0-9 .-]{7,30}" autocomplete="tel"></label><% } %>
+      <label class="field"><span>Adresse e-mail</span><input name="email" type="email" required maxlength="190" autocomplete="email"></label>
+      <label class="field"><span>Mot de passe</span><input name="password" type="password" required minlength="<%= mode === 'register' ? 10 : 1 %>" maxlength="100" autocomplete="<%= mode === 'login' ? 'current-password' : 'new-password' %>"></label>
+      <button class="button button--blue button--wide" type="submit"><%= mode === 'login' ? 'Me connecter' : 'Créer mon compte' %> <span aria-hidden="true">→</span></button><p class="form-feedback" aria-live="polite"></p>
+    </form>
+    <p class="auth-switch"><%= mode === 'login' ? 'Pas encore de compte ?' : 'Vous avez déjà un compte ?' %> <a href="<%= mode === 'login' ? '/inscription' : '/connexion' %>"><%= mode === 'login' ? 'Inscrivez-vous' : 'Connectez-vous' %></a></p>
+  </div>
+</section>
+<%- include('../partials/footer') %>

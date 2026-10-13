@@ -1,0 +1,11 @@
+<article class="hotel-card">
+  <a class="scene scene--<%= asList(hotel.images)[0] || 'coast' %>" style="<%= sceneBackground(asList(hotel.images)[0]) %>" href="/hotels/<%= hotel.slug %>" aria-label="Découvrir <%= hotel.name %> à <%= hotel.city %>">
+    <span class="scene__label"><%= hotel.city %></span>
+    <span class="scene__stars" aria-label="<%= hotel.stars %> étoiles"><%= '★'.repeat(Number(hotel.stars)) %></span>
+  </a>
+  <div class="hotel-card__body">
+    <div class="hotel-card__title"><div><p class="card-kicker"><%= hotel.city %></p><h3><a href="/hotels/<%= hotel.slug %>"><%= hotel.name %></a></h3></div><span class="stars" aria-hidden="true"><%= '★'.repeat(Number(hotel.stars)) %></span></div>
+    <p class="card-summary"><%= hotel.summary %></p>
+    <div class="card-bottom"><span><%= hotel.price ? `À partir de ${Number(hotel.price).toFixed(0)} TND` : 'Sur demande' %></span><a class="text-link" href="/hotels/<%= hotel.slug %>">Découvrir <span aria-hidden="true">→</span></a></div>
+  </div>
+</article>

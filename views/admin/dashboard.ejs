@@ -1,0 +1,20 @@
+<%- include('../partials/head', { title, description: 'Gestion des contenus, demandes et contacts Mercan Voyages.' }) %>
+<%- include('../partials/header') %>
+<section class="page-hero page-hero--admin"><div class="container"><p class="eyebrow eyebrow--light">Espace sécurisé · <%= user.name %></p><h1>Administration</h1><p>Gérez les offres du site et retrouvez les demandes de vos voyageurs.</p></div></section>
+<section class="section container admin-section" data-admin-app>
+  <div class="admin-tabs" role="tablist" aria-label="Sections d’administration">
+    <button type="button" role="tab" aria-selected="true" data-admin-tab="hotels">Hôtels</button>
+    <button type="button" role="tab" aria-selected="false" data-admin-tab="packages">Voyages, tours & Omra</button>
+    <button type="button" role="tab" aria-selected="false" data-admin-tab="slides">Diaporama</button>
+    <button type="button" role="tab" aria-selected="false" data-admin-tab="partners">Partenaires</button>
+    <button type="button" role="tab" aria-selected="false" data-admin-tab="requests">Demandes</button>
+    <button type="button" role="tab" aria-selected="false" data-admin-tab="messages">Messages</button>
+    <button type="button" role="tab" aria-selected="false" data-admin-tab="newsletter">Newsletter</button>
+  </div>
+  <div class="admin-toolbar"><div><p class="eyebrow">Tableau de bord</p><h2 data-admin-title>Hôtels</h2></div><div class="admin-toolbar__actions"><button class="button button--outline" type="button" data-admin-export hidden>Exporter CSV</button><button class="button button--blue" type="button" data-admin-add>＋ Ajouter</button></div></div>
+  <p class="form-feedback" data-admin-feedback aria-live="polite"></p>
+  <div class="admin-content" data-admin-content><p class="loading-message">Chargement…</p></div>
+</section>
+<dialog class="admin-dialog" data-admin-dialog aria-labelledby="admin-dialog-title"><form method="dialog"><button class="icon-button admin-dialog__close" aria-label="Fermer">×</button></form><h2 id="admin-dialog-title">Ajouter un élément</h2><form data-admin-editor><div class="admin-editor-fields" data-admin-editor-fields></div><div class="admin-dialog__actions"><button class="button button--outline" type="button" data-admin-cancel>Annuler</button><button class="button button--blue" type="submit">Enregistrer</button></div><p class="form-feedback" data-editor-feedback aria-live="polite"></p></form></dialog>
+<script src="/js/admin.js" defer></script>
+<%- include('../partials/footer') %>
