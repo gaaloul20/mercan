@@ -12,6 +12,12 @@ const MongoSessionStore = require('./db/session-store');
 const app = express();
 const port = Number(process.env.PORT || 3000);
 const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+const whatsappNumber = process.env.WHATSAPP_NUMBER || '21655333100';
+
+if (!/^\d{8,15}$/.test(whatsappNumber)) {
+  throw new Error('WHATSAPP_NUMBER doit contenir entre 8 et 15 chiffres, sans espaces ni signe +.');
+}
+app.locals.whatsappNumber = whatsappNumber;
 
 if (isProduction && (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 32)) {
   throw new Error('En production, SESSION_SECRET doit contenir au moins 32 caractères.');

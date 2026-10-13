@@ -15,6 +15,7 @@
             <% if (!isPhoto(image) && item.price) { %><span class="voyage-poster__price">À partir de<br><strong><%= Number(item.price).toLocaleString('fr-FR') %> TND</strong></span><% } %>
             <span class="voyage-poster__title"><%= item.title %></span>
           </a>
+          <button class="button button--orange voyage-poster__reserve" type="button" data-request data-request-type="<%= item.type %>" data-item-id="<%= item.id %>" data-item-title="<%= item.title %>">Réserver</button>
         </article>
       <% }) %>
     </div>

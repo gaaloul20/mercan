@@ -15,7 +15,7 @@ async function connectMongo() {
     client = nextClient;
     try {
       await nextClient.connect();
-      const nextDatabase = nextClient.db(process.env.MONGODB_DB_NAME || undefined);
+      const nextDatabase = nextClient.db(process.env.MONGODB_DB_NAME || 'mercan_voyages');
       await ensureIndexes(nextDatabase);
       database = nextDatabase;
       return database;

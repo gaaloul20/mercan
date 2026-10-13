@@ -39,11 +39,41 @@ router.get('/hotels', async (req, res, next) => {
   try {
     const city = cities.includes(req.query.ville) ? req.query.ville : '';
     const stars = /^[1-5]$/.test(String(req.query.etoiles || '')) ? Number(req.query.etoiles) : 0;
+    const sort = ['recommended', 'stars', 'name'].includes(req.query.tri) ? req.query.tri : 'recommended';
+    const arrival = /^\d{4}-\d{2}-\d{2}$/.test(String(req.query.arrivee || '')) ? req.query.arrivee : '';
+    const departure = /^\d{4}-\d{2}-\d{2}$/.test(String(req.query.depart || '')) ? req.query.depart : '';
+    const roomCount = /^[1-4]$/.test(String(req.query.chambres || '')) ? Number(req.query.chambres) : 1;
+    const adultsInput = /^[1-9]\d?$/.test(String(req.query.voyageurs_adultes || '')) ? Number(req.query.voyageurs_adultes) : 2;
+    const childrenInput = /^(0|[1-9]\d?)$/.test(String(req.query.voyageurs_enfants || '')) ? Number(req.query.voyageurs_enfants) : 0;
+    const adults = Math.min(roomCount * 4, Math.max(roomCount, adultsInput));
+    const children = Math.min(roomCount * 3, childrenInput);
+    const allHotels = await collection('hotels').find().toArray();
+    const boards = [...new Set(allHotels.map((hotel) => hotel.board).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'fr'));
+    const board = boards.includes(req.query.pension) ? req.query.pension : '';
+    const cityCounts = Object.fromEntries(cities.map((name) => [name, allHotels.filter((hotel) => hotel.city === name).length]));
+    const starCounts = Object.fromEntries([1, 2, 3, 4, 5].map((count) => [count, allHotels.filter((hotel) => Number(hotel.stars) === count).length]));
+    const boardCounts = Object.fromEntries(boards.map((name) => [name, allHotels.filter((hotel) => hotel.board === name).length]));
     const filter = {};
     if (city) filter.city = city;
     if (stars) filter.stars = stars;
-    const hotels = await collection('hotels').find(filter).sort({ city: 1, stars: -1, name: 1 }).toArray();
-    view(res, 'pages/hotels', { title: 'Hôtels en Tunisie | Mercan Voyages', description: 'Choisissez parmi nos hôtels à Hammamet, Sousse, Monastir, Mahdia, Djerba et Tabarka.', hotels, selectedCity: city, selectedStars: stars });
+    if (board) filter.board = board;
+    const hotels = allHotels.filter((hotel) => (
+      (!city || hotel.city === city) &&
+      (!stars || Number(hotel.stars) === stars) &&
+      (!board || hotel.board === board)
+    ));
+    hotels.sort((a, b) => {
+      if (sort === 'name') return a.name.localeCompare(b.name, 'fr');
+      if (sort === 'stars') return Number(b.stars) - Number(a.stars) || a.name.localeCompare(b.name, 'fr');
+      return cities.indexOf(a.city) - cities.indexOf(b.city) || Number(b.stars) - Number(a.stars) || a.name.localeCompare(b.name, 'fr');
+    });
+    view(res, 'pages/hotels', {
+      title: 'Hôtels en Tunisie | Mercan Voyages',
+      description: 'Choisissez parmi nos hôtels à Hammamet, Sousse, Monastir, Mahdia, Djerba et Tabarka.',
+      hotels, selectedCity: city, selectedStars: stars, selectedBoard: board, boards, sort,
+      arrival, departure, roomCount, adults, children,
+      allCityCount: allHotels.length, cityCounts, starCounts, boardCounts
+    });
   } catch (error) {
     next(error);
   }

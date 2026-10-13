@@ -13,7 +13,7 @@
         <label class="field"><span>Adultes</span><select name="adults"><% for (let n = 1; n <= 9; n++) { %><option value="<%= n %>" <%= n === 1 ? 'selected' : '' %>><%= n %></option><% } %></select></label>
         <label class="field"><span>Enfants</span><select name="children"><% for (let n = 0; n <= 9; n++) { %><option value="<%= n %>"><%= n %></option><% } %></select></label>
         <label class="field"><span>Compagnie souhaitée (facultatif)</span><input name="airline" maxlength="120" value="<%= selectedAirline %>" placeholder="Ex. Nouvelair"></label>
-        <label class="field"><span>Votre téléphone</span><input name="phone" type="tel" autocomplete="tel" required pattern="[+()0-9 .-]{7,30}" placeholder="+216"></label>
+        <label class="field"><span>Votre téléphone</span><input name="phone" type="tel" autocomplete="tel" required pattern="[0-9+\\(\\).\\- ]{7,30}" placeholder="+216"></label>
       </div>
       <p class="form-note">Votre demande est enregistrée et nous ouvrons ensuite WhatsApp pour vous laisser l’envoyer à notre équipe.</p>
       <button class="button button--blue" type="submit">Envoyer ma demande <span aria-hidden="true">→</span></button><p class="form-feedback" aria-live="polite"></p>

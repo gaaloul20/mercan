@@ -1,0 +1,19 @@
+<article class="hotel-result-card">
+  <% const image = asList(hotel.images)[0] || 'coast'; %>
+  <a class="hotel-result-card__visual scene scene--<%= isPhoto(image) ? 'photo' : image %>" style="<%= sceneBackground(image) %>" href="/hotels/<%= hotel.slug %>" aria-label="Découvrir <%= hotel.name %> à <%= hotel.city %>">
+    <% if (isPhoto(image)) { %><img class="scene__image" src="<%= image %>" alt="Hôtel <%= hotel.name %>" loading="lazy"><% } else { %><span class="scene__label"><%= hotel.city %></span><% } %>
+    <span class="scene__stars" aria-label="<%= hotel.stars %> étoiles"><%= '★'.repeat(Number(hotel.stars)) %></span>
+  </a>
+  <div class="hotel-result-card__body">
+    <p class="card-kicker"><%= hotel.city %> · <%= hotel.board %></p>
+    <h3><a href="/hotels/<%= hotel.slug %>"><%= hotel.name %></a></h3>
+    <p class="hotel-result-card__summary"><%= hotel.summary %></p>
+    <% if (asList(hotel.services).length) { %><ul class="hotel-service-list"><% asList(hotel.services).slice(0, 4).forEach((service) => { %><li><%= service %></li><% }) %></ul><% } %>
+  </div>
+  <div class="hotel-result-card__offer">
+    <p class="eyebrow">Votre séjour</p>
+    <strong><%= hotel.price ? `À partir de ${Number(hotel.price).toLocaleString('fr-FR')} TND` : 'Sur demande' %></strong>
+    <a class="button button--outline button--wide" href="/hotels/<%= hotel.slug %>">Voir le détail</a>
+    <button class="button button--orange button--wide" type="button" data-request data-request-type="hotel" data-item-id="<%= hotel.id %>" data-item-title="<%= hotel.name %>" data-request-context="<%= [arrival ? `Arrivée souhaitée : ${arrival}` : '', departure ? `départ souhaité : ${departure}` : '', `Voyageurs : ${roomCount} chambre(s), ${adults} adulte(s), ${children} enfant(s)`].filter(Boolean).join(' · ') %>">Réserver</button>
+  </div>
+</article>

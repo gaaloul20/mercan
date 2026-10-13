@@ -1,6 +1,7 @@
 (() => {
   const one = (selector, root = document) => root.querySelector(selector);
   const all = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const whatsappNumber = document.body.dataset.whatsappNumber || '21655333100';
 
   const pageLoader = one('#page-loader');
   if (pageLoader) {
@@ -249,7 +250,19 @@
     const roomInput = one('[name="chambres"]', occupancy);
     const summary = one('[data-occupancy-summary]', occupancy);
     const hotelForm = one('.hotel-search');
-    const rooms = [{ adults: 2, children: 0 }];
+    const initialRoomCount = Math.min(4, Math.max(1, Number(roomInput.value) || 1));
+    const adultInput = one('[name="voyageurs_adultes"]', hotelForm);
+    const childrenInput = one('[name="voyageurs_enfants"]', hotelForm);
+    let remainingAdults = Math.min(initialRoomCount * 4, Math.max(initialRoomCount, Number(adultInput.value) || 2));
+    let remainingChildren = Math.min(initialRoomCount * 3, Math.max(0, Number(childrenInput.value) || 0));
+    const rooms = Array.from({ length: initialRoomCount }, (_, index) => {
+      const roomsLeft = initialRoomCount - index - 1;
+      const adults = Math.min(4, remainingAdults - roomsLeft);
+      const children = Math.min(3, remainingChildren);
+      remainingAdults -= adults;
+      remainingChildren -= children;
+      return { adults, children };
+    });
     const make = (tag, className, text) => {
       const element = document.createElement(tag);
       if (className) element.className = className;
@@ -331,13 +344,17 @@
     const dialog = document.createElement('dialog');
     dialog.className = 'request-dialog';
     dialog.setAttribute('aria-labelledby', 'request-title');
-    dialog.innerHTML = '<form method="dialog"><button class="icon-button request-dialog__close" aria-label="Fermer">×</button></form><p class="eyebrow">Parlons de votre projet</p><h2 id="request-title">Faire une demande</h2><p class="request-item"></p><form class="request-form"><label class="field"><span>Nom complet</span><input name="name" required minlength="2" maxlength="120" autocomplete="name"></label><label class="field"><span>Téléphone</span><input name="phone" type="tel" required pattern="[+()0-9 .-]{7,30}" autocomplete="tel"></label><label class="field"><span>Votre message</span><textarea name="message" rows="4" required minlength="2" maxlength="3000"></textarea></label><button class="button button--orange button--wide" type="submit">Envoyer ma demande</button><p class="form-feedback" aria-live="polite"></p></form>';
+    dialog.innerHTML = '<form method="dialog"><button class="icon-button request-dialog__close" aria-label="Fermer">×</button></form><p class="eyebrow">Parlons de votre projet</p><h2 id="request-title">Réserver cette offre</h2><p class="request-item"></p><form class="request-form" action="/api/requests" method="post"><label class="field"><span>Nom complet</span><input name="name" required minlength="2" maxlength="120" autocomplete="name"></label><label class="field"><span>Téléphone</span><input name="phone" type="tel" required pattern="[0-9+\\(\\).\\- ]{7,30}" autocomplete="tel"></label><label class="field"><span>Votre message</span><textarea name="message" rows="4" required minlength="2" maxlength="3000"></textarea></label><button class="button button--orange button--wide" type="submit">Continuer sur WhatsApp</button><p class="form-feedback" aria-live="polite"></p></form>';
     document.body.append(dialog);
     let selectedRequest = null;
     requestButtons.forEach((button) => button.addEventListener('click', () => {
       selectedRequest = { type: button.dataset.requestType, itemId: Number(button.dataset.itemId), title: button.dataset.itemTitle };
       one('.request-item', dialog).textContent = selectedRequest.title;
-      one('textarea', dialog).value = `Bonjour, je souhaite recevoir des informations sur ${selectedRequest.title}.`;
+      selectedRequest.context = button.dataset.requestContext || '';
+      one('textarea', dialog).value = [
+        'Merci de me contacter pour confirmer les disponibilités et les modalités.',
+        selectedRequest.context
+      ].filter(Boolean).join('\n');
       if (document.body.dataset.userName) one('[name="name"]', dialog).value = document.body.dataset.userName;
       if (document.body.dataset.userPhone) one('[name="phone"]', dialog).value = document.body.dataset.userPhone;
       dialog.showModal();
@@ -345,7 +362,7 @@
     }));
     one('.request-form', dialog).addEventListener('submit', async (event) => {
       event.preventDefault();
-      await submitForm(event.currentTarget, { ...selectedRequest });
+      await submitForm(event.currentTarget, { ...selectedRequest, whatsappReservation: true });
     });
   }
 
@@ -353,6 +370,8 @@
     const feedback = one('.form-feedback', form);
     const submit = one('[type="submit"]', form);
     const originalText = submit.textContent;
+    const whatsappWindow = extra.whatsappReservation ? window.open('about:blank', '_blank') : null;
+    if (whatsappWindow) whatsappWindow.opener = null;
     feedback.textContent = '';
     feedback.className = 'form-feedback';
     submit.disabled = true;
@@ -371,10 +390,24 @@
       form.reset();
       if (result.redirect) {
         window.location.assign(result.redirect);
+      } else if (extra.whatsappReservation) {
+        const message = `Bonjour Mercan Voyages, je souhaite réserver l’offre « ${extra.title} ». ${body.message} Mon nom : ${body.name}, téléphone : ${body.phone}.`;
+        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+        if (whatsappWindow) {
+          whatsappWindow.location.href = whatsappUrl;
+        } else {
+          const link = document.createElement('a');
+          link.className = 'feedback-link';
+          link.href = whatsappUrl;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = 'Ouvrir WhatsApp pour envoyer ma réservation ↗';
+          feedback.append(document.createElement('br'), link);
+        }
       } else if (result.whatsappMessage) {
         const link = document.createElement('a');
         link.className = 'feedback-link';
-        link.href = `https://wa.me/21655333100?text=${encodeURIComponent(result.whatsappMessage)}`;
+        link.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(result.whatsappMessage)}`;
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         link.textContent = 'Continuer sur WhatsApp ↗';
@@ -383,13 +416,14 @@
         const link = document.createElement('a');
         const message = `Bonjour Mercan Voyages, ${body.message} Mon nom : ${body.name}, téléphone : ${body.phone}.`;
         link.className = 'feedback-link';
-        link.href = `https://wa.me/21655333100?text=${encodeURIComponent(message)}`;
+        link.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         link.textContent = 'Envoyer aussi sur WhatsApp ↗';
         feedback.append(document.createElement('br'), link);
       }
     } catch (error) {
+      if (whatsappWindow) whatsappWindow.close();
       feedback.textContent = error.message;
       feedback.classList.add('is-error');
     } finally {

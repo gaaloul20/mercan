@@ -1,13 +1,78 @@
 <%- include('../partials/head', { title, description }) %>
 <%- include('../partials/header') %>
-<section class="page-hero page-hero--hotels"><div class="container"><p class="eyebrow eyebrow--light">Séjours en Tunisie</p><h1>Nos hôtels</h1><p>Choisissez votre escale parmi les plus belles côtes tunisiennes.</p></div></section>
-<section class="section container">
-  <form class="filter-bar" action="/hotels" method="get">
-    <label class="field"><span>Ville</span><select name="ville"><option value="">Toutes les villes</option><% cities.forEach((city) => { %><option value="<%= city %>" <%= selectedCity === city ? 'selected' : '' %>><%= city %></option><% }) %></select></label>
-    <label class="field"><span>Catégorie</span><select name="etoiles"><option value="">Toutes les catégories</option><% [5,4,3,2,1].forEach((stars) => { %><option value="<%= stars %>" <%= selectedStars === stars ? 'selected' : '' %>><%= stars %> étoiles</option><% }) %></select></label>
-    <button class="button button--blue" type="submit">Filtrer les hôtels</button>
-  </form>
-  <div class="results-heading"><h2><%= hotels.length %> <%= hotels.length === 1 ? 'hôtel trouvé' : 'hôtels trouvés' %></h2><p>Prix affichés à titre indicatif lorsqu’ils sont disponibles.</p></div>
-  <% if (hotels.length) { %><div class="card-grid card-grid--hotels"><% hotels.forEach((hotel) => { %><%- include('../partials/hotel-card', { hotel }) %><% }) %></div><% } else { %><div class="empty-state"><h2>Aucun hôtel ne correspond à vos filtres</h2><p>Modifiez vos critères ou demandez conseil à notre équipe.</p><a class="button button--outline" href="/hotels">Effacer les filtres</a></div><% } %>
+<section class="hotel-catalog-heading container">
+  <p class="eyebrow">Séjours en Tunisie · Mercan Voyages</p>
+  <h1>Nos hôtels</h1>
+  <p>Comparez nos adresses et indiquez vos dates pour préparer une demande personnalisée.</p>
 </section>
+<section class="hotel-search-strip" aria-labelledby="hotel-search-title">
+  <div class="container">
+    <h2 id="hotel-search-title">Votre séjour</h2>
+    <form class="hotel-search" action="/hotels" method="get">
+      <label class="field field--destination"><span>Destination</span><select name="ville"><option value="">Toutes les destinations</option><% cities.forEach((city) => { %><option value="<%= city %>" <%= selectedCity === city ? 'selected' : '' %>><%= city %></option><% }) %></select></label>
+      <label class="field"><span>Arrivée</span><input type="date" name="arrivee" value="<%= arrival %>" data-date-min></label>
+      <label class="field"><span>Départ</span><input type="date" name="depart" value="<%= departure %>" data-date-min></label>
+      <div class="occupancy-wrap">
+        <button class="field occupancy-trigger" type="button" aria-expanded="false" aria-controls="occupancy-panel"><span>Voyageurs</span><span data-occupancy-summary><%= roomCount %> chambre<%= roomCount > 1 ? 's' : '' %> · <%= adults %> adulte<%= adults > 1 ? 's' : '' %><%= children ? ` · ${children} enfant${children > 1 ? 's' : ''}` : '' %></span></button>
+        <div class="occupancy-panel" id="occupancy-panel" hidden>
+          <div class="occupancy-panel__head"><strong>Chambres et occupations</strong><button type="button" class="icon-button" data-close-occupancy aria-label="Fermer">×</button></div>
+          <div class="room-list" data-room-list></div>
+          <button class="text-link add-room" type="button" data-add-room>＋ Ajouter une chambre</button>
+          <button class="button button--blue occupancy-done" type="button" data-close-occupancy>Terminé</button>
+        </div>
+        <input type="hidden" name="chambres" value="<%= roomCount %>">
+      </div>
+      <input type="hidden" name="voyageurs_adultes" value="<%= adults %>">
+      <input type="hidden" name="voyageurs_enfants" value="<%= children %>">
+      <input type="hidden" name="etoiles" value="<%= selectedStars || '' %>">
+      <input type="hidden" name="pension" value="<%= selectedBoard %>">
+      <input type="hidden" name="tri" value="<%= sort %>">
+      <button class="button button--orange search-submit" type="submit">Rechercher <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="hotel-search-note">Les dates et le nombre de voyageurs nous aident à préparer votre demande ; les disponibilités sont confirmées par nos conseillers.</p>
+  </div>
+</section>
+<main class="container hotel-results-layout">
+  <aside class="hotel-filter-panel">
+    <details open>
+      <summary><span aria-hidden="true">☷</span> Affiner les résultats</summary>
+      <form action="/hotels" method="get">
+        <input type="hidden" name="arrivee" value="<%= arrival %>">
+        <input type="hidden" name="depart" value="<%= departure %>">
+        <input type="hidden" name="chambres" value="<%= roomCount %>">
+        <input type="hidden" name="voyageurs_adultes" value="<%= adults %>">
+        <input type="hidden" name="voyageurs_enfants" value="<%= children %>">
+        <fieldset class="hotel-filter-group">
+          <legend>Destination</legend>
+          <label><input type="radio" name="ville" value="" <%= selectedCity ? '' : 'checked' %>><span>Toutes les villes</span><small><%= allCityCount %></small></label>
+          <% cities.forEach((city) => { %><label><input type="radio" name="ville" value="<%= city %>" <%= selectedCity === city ? 'checked' : '' %>><span><%= city %></span><small><%= cityCounts[city] || 0 %></small></label><% }) %>
+        </fieldset>
+        <fieldset class="hotel-filter-group">
+          <legend>Catégorie</legend>
+          <label><input type="radio" name="etoiles" value="" <%= selectedStars ? '' : 'checked' %>><span>Toutes les catégories</span><small><%= allCityCount %></small></label>
+          <% [5, 4, 3, 2, 1].forEach((stars) => { %><label><input type="radio" name="etoiles" value="<%= stars %>" <%= selectedStars === stars ? 'checked' : '' %>><span><%= stars %> étoile<%= stars > 1 ? 's' : '' %> <span class="stars" aria-hidden="true"><%= '★'.repeat(stars) %></span></span><small><%= starCounts[stars] || 0 %></small></label><% }) %>
+        </fieldset>
+        <% if (boards.length) { %><fieldset class="hotel-filter-group">
+          <legend>Pension</legend>
+          <label><input type="radio" name="pension" value="" <%= selectedBoard ? '' : 'checked' %>><span>Toutes les pensions</span></label>
+          <% boards.forEach((board) => { %><label><input type="radio" name="pension" value="<%= board %>" <%= selectedBoard === board ? 'checked' : '' %>><span><%= board %></span><small><%= boardCounts[board] || 0 %></small></label><% }) %>
+        </fieldset><% } %>
+        <label class="field hotel-sort"><span>Trier par</span><select name="tri"><option value="recommended" <%= sort === 'recommended' ? 'selected' : '' %>>Nos recommandations</option><option value="stars" <%= sort === 'stars' ? 'selected' : '' %>>Catégorie décroissante</option><option value="name" <%= sort === 'name' ? 'selected' : '' %>>Nom A à Z</option></select></label>
+        <button class="button button--blue button--wide" type="submit">Appliquer les filtres</button>
+        <a class="hotel-filter-reset" href="/hotels">Effacer les filtres</a>
+      </form>
+    </details>
+  </aside>
+  <section class="hotel-results" aria-labelledby="hotel-results-title">
+    <div class="hotel-results__heading">
+      <div><p class="eyebrow">Nos adresses sélectionnées</p><h2 id="hotel-results-title"><%= hotels.length %> <%= hotels.length === 1 ? 'hôtel trouvé' : 'hôtels trouvés' %></h2></div>
+      <p>Tarifs sur demande lorsqu’aucun prix n’est affiché.</p>
+    </div>
+    <% if (hotels.length) { %>
+      <div class="hotel-result-list"><% hotels.forEach((hotel) => { %><%- include('../partials/hotel-result', { hotel, arrival, departure, roomCount, adults, children }) %><% }) %></div>
+    <% } else { %>
+      <div class="empty-state"><h2>Aucun hôtel ne correspond à vos filtres</h2><p>Modifiez vos critères ou demandez conseil à notre équipe.</p><a class="button button--outline" href="/hotels">Effacer les filtres</a></div>
+    <% } %>
+  </section>
+</main>
 <%- include('../partials/footer') %>

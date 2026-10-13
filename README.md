@@ -43,9 +43,12 @@ liens entre demandes, comptes et offres.
 1. Créer un cluster MongoDB Atlas, un utilisateur de base de données et
    autoriser l’adresse IP du serveur dans l’Access List Atlas.
 2. Copier `.env.example` en `.env`, puis renseigner `MONGODB_URI`,
-   `MONGODB_DB_NAME`, un `SESSION_SECRET` long et un mot de passe
+   `MONGODB_DB_NAME` (par défaut `mercan_voyages`), un `SESSION_SECRET` long et un mot de passe
    administrateur robuste. Si le mot de passe Atlas contient des caractères
    spéciaux, encoder ceux-ci dans l’URI.
+   `WHATSAPP_NUMBER` est facultatif et utilise par défaut le WhatsApp de
+   l’agence (`21655333100`). Pour tester les demandes sur votre téléphone,
+   indiquez le numéro au format international sans `+` ni espaces.
 3. Installer les dépendances : `npm install`.
 4. Insérer les exemples : `npm run seed`.
 5. Lancer le serveur : `npm start`, puis ouvrir `http://localhost:3000`.
@@ -84,7 +87,7 @@ enregistrées dans Vercel Blob plutôt que sur le disque temporaire des Function
    Vercel pour activer l’authentification OIDC des uploads. Pour le
    développement local, renseigner `BLOB_READ_WRITE_TOKEN` dans `.env`.
 3. Ajouter dans **Settings > Environment Variables** : `MONGODB_URI`,
-   `MONGODB_DB_NAME`, `SESSION_SECRET` (au moins 32 caractères),
+   `MONGODB_DB_NAME=mercan_voyages`, `SESSION_SECRET` (au moins 32 caractères),
    `ADMIN_EMAIL` et `ADMIN_PASSWORD`. Vercel configure l’environnement de
    production automatiquement. Ne pas ajouter de secrets au dépôt Git ni les
    envoyer dans un message.

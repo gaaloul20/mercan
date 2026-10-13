@@ -7,7 +7,7 @@
     <h1><%= mode === 'login' ? 'Se connecter' : 'Créer mon compte' %></h1>
     <p><%= mode === 'login' ? 'Retrouvez vos demandes et leur suivi.' : 'Suivez vos demandes et échangez plus facilement avec nos conseillers.' %></p>
     <form class="js-form" action="/api/auth/<%= mode %>" method="post">
-      <% if (mode === 'register') { %><label class="field"><span>Nom complet</span><input name="name" required minlength="2" maxlength="120" autocomplete="name"></label><label class="field"><span>Téléphone</span><input name="phone" type="tel" required pattern="[+()0-9 .-]{7,30}" autocomplete="tel"></label><% } %>
+      <% if (mode === 'register') { %><label class="field"><span>Nom complet</span><input name="name" required minlength="2" maxlength="120" autocomplete="name"></label><label class="field"><span>Téléphone</span><input name="phone" type="tel" required pattern="[0-9+\\(\\).\\- ]{7,30}" autocomplete="tel"></label><% } %>
       <label class="field"><span>Adresse e-mail</span><input name="email" type="email" required maxlength="190" autocomplete="email"></label>
       <label class="field"><span>Mot de passe</span><input name="password" type="password" required minlength="<%= mode === 'register' ? 10 : 1 %>" maxlength="100" autocomplete="<%= mode === 'login' ? 'current-password' : 'new-password' %>"></label>
       <button class="button button--blue button--wide" type="submit"><%= mode === 'login' ? 'Me connecter' : 'Créer mon compte' %> <span aria-hidden="true">→</span></button><p class="form-feedback" aria-live="polite"></p>
